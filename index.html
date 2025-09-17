@@ -6,29 +6,35 @@
 <title>Botón Play/Pause</title>
 </head>
 <body>
-   <button id="audioBtn">Play</button>
+  
+  <button id="audioBtn">Play</button>
 
 <script>
-document.getElementById('audioBtn').addEventListener('click', function() {
-    // Crear audio dentro del click
-    const audio = new Audio('song/song.mp3');
-    
-    // Intentar reproducir
-    audio.play().then(() => {
-        // Reproducir loop
-        audio.loop = true;
-        this.textContent = 'Pause';
-        // Guardar audio en el botón para poder pausarlo
-        this.audioInstance = audio;
-    }).catch(err => {
-        console.error('Error reproducir audio:', err);
-    });
+let audioInstance = null;
 
-    // Si ya había audio, lo pausamos
-    if (this.audioInstance && !this.audioInstance.paused) {
-        this.audioInstance.pause();
+document.getElementById('audioBtn').addEventListener('click', function() {
+    if (!audioInstance) {
+        // Crear audio al primer click
+        audioInstance = new Audio('song/song.mp3');
+        audioInstance.loop = true;
+        audioInstance.muted = false; // opcional, necesario si iPad bloquea
+        audioInstance.playsInline = true; // importante para Safari iOS/iPadOS
+        audioInstance.play().then(() => {
+            this.textContent = 'Pause';
+        }).catch(err => {
+            console.error('Error reproduciendo audio:', err);
+        });
+    } else if (audioInstance.paused) {
+        // Si estaba pausado, reproducir
+        audioInstance.play().then(() => {
+            this.textContent = 'Pause';
+        }).catch(err => {
+            console.error('Error reproducir audio:', err);
+        });
+    } else {
+        // Si estaba sonando, pausar
+        audioInstance.pause();
         this.textContent = 'Play';
-        this.audioInstance = null;
     }
 });
 </script>
