@@ -2,9 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Reproducir/Pausar Audio</title>
+<title>Reproducir/Pausar Audio iPad</title>
 <style>
-  body { text-align: center; padding-top: 50px; font-family: Arial; }
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 50px;
+  }
   #btnReproducir {
     padding: 20px 40px;
     font-size: 20px;
@@ -24,25 +28,75 @@
 <button id="btnReproducir">Tocar canción</button>
 
 <script>
-let audio;
-const boton = document.getElementById('btnReproducir');
+(function () {
+  // Verifica compatibilidad con Web Audio API
+  if ("AudioContext" in window || "webkitAudioContext" in window) {
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+    var context = new AudioContext();
+    var gainNode = context.createGain();
+    gainNode.gain.value = 1;
+    gainNode.connect(context.destination);
 
-boton.addEventListener('click', () => {
-    if (!audio) {
-        // URL externa directa al archivo de audio
-        audio = new Audio('https://raw.githubusercontent.com/JesusGGGGit/pruebas/main/song/song.mp3');
+    var audioBuffer;
+    var playingSource = null; // Fuente actual
+    var boton = document.getElementById("btnReproducir");
+    var soundUrl = "https://raw.githubusercontent.com/JesusGGGGit/pruebas/main/song/song.mp3";
+
+    // Cargar audio
+    fetch(soundUrl)
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer =>
+        context.decodeAudioData(
+          arrayBuffer,
+          function(buffer) {
+            audioBuffer = buffer;
+          },
+          function(err) { console.error(err); }
+        )
+      );
+
+    // Función para reproducir o pausar
+    function toggleAudio() {
+      if (!audioBuffer) return; // Aún no cargó
+
+      if (playingSource) {
+        // Pausar
+        playingSource.stop();
+        playingSource = null;
+        boton.textContent = "Tocar canción";
+      } else {
+        // Reproducir
+        var source = context.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(gainNode);
+        source.start(0);
+        playingSource = source;
+        boton.textContent = "Pausar canción";
+
+        // Cuando termina la canción
+        source.onended = function() {
+          playingSource = null;
+          boton.textContent = "Tocar canción";
+        };
+      }
     }
 
-    if (audio.paused) {
-        audio.play().catch(err => {
-            console.log('No se pudo reproducir el audio:', err);
-        });
-        boton.textContent = 'Pausar canción';
-    } else {
-        audio.pause();
-        boton.textContent = 'Tocar canción';
+    boton.addEventListener("click", toggleAudio);
+
+    // Desbloquear audio en iOS
+    function unlock() {
+      var buffer = context.createBuffer(1, 1, 22050);
+      var src = context.createBufferSource();
+      src.buffer = buffer;
+      src.connect(context.destination);
+      src.start ? src.start(0) : src.noteOn(0);
     }
-});
+    unlock();
+
+  } else {
+    alert("Tu navegador no soporta Web Audio API");
+  }
+})();
 </script>
 
 </body>
