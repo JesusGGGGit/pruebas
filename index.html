@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Botón Play/Pause</title>
+</head>
+<body>
+    <button id="audioButton">Play</button>
+
+    <script>
+        const audio = new Audio('song/song.mp3'); 
+        audio.loop = true;
+
+        const button = document.getElementById('audioButton');
+
+        button.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    button.textContent = 'Pause';
+                }).catch(err => {
+                    console.error('Error al reproducir audio:', err);
+                });
+            } else {
+                audio.pause();
+                button.textContent = 'Play';
+            }
+        });
+    </script>
+</body>
+</html>
