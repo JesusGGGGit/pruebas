@@ -6,26 +6,30 @@
 <title>Botón Play/Pause</title>
 </head>
 <body>
-    <button id="audioButton">Play</button>
+   <button id="audioButton">Play</button>
 
-    <script>
-        const audio = new Audio('song/song.mp3'); // Cambia la ruta a tu audio
-        audio.loop = true; // se puede repetir
+<script>
+const button = document.getElementById('audioButton');
+let audio; // No se crea hasta el clic
 
-        const button = document.getElementById('audioButton');
+button.addEventListener('click', () => {
+    if (!audio) {
+        audio = new Audio('song/song.mp3'); // ruta a tu audio
+    }
 
-        button.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play().then(() => {
-                    button.textContent = 'Pause';
-                }).catch(err => {
-                    console.error('Error al reproducir audio:', err);
-                });
-            } else {
-                audio.pause();
-                button.textContent = 'Play';
-            }
+    if (audio.paused) {
+        audio.play().then(() => {
+            audio.loop = true; // activamos loop después de reproducir
+            button.textContent = 'Pause';
+        }).catch(err => {
+            console.error('Error al reproducir audio:', err);
         });
-    </script>
+    } else {
+        audio.pause();
+        button.textContent = 'Play';
+    }
+});
+</script>
+
 </body>
 </html>
