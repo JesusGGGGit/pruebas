@@ -4,10 +4,22 @@
 <meta charset="UTF-8">
 <title>Reproducir/Pausar Audio</title>
 <style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 50px;
+  }
   #btnReproducir {
-    padding: 15px 30px;
-    font-size: 18px;
+    padding: 20px 40px;
+    font-size: 20px;
     cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+  }
+  #btnReproducir:hover {
+    background-color: #0056b3;
   }
 </style>
 </head>
@@ -18,11 +30,11 @@
 <button id="btnReproducir">Tocar canción</button>
 
 <script>
-let audio;
+let audio; // se creará en el primer click
 const boton = document.getElementById('btnReproducir');
 
 boton.addEventListener('click', () => {
-    // Crear el audio solo en el primer click
+    // Crear el audio solo en el primer click (cumple con la política de iPad)
     if (!audio) {
         audio = new Audio('song/song.mp3');
     }
@@ -30,7 +42,7 @@ boton.addEventListener('click', () => {
     // Alternar reproducción / pausa
     if (audio.paused) {
         audio.play().catch(err => {
-            console.log('Error al reproducir audio:', err);
+            console.log('No se pudo reproducir el audio:', err);
         });
         boton.textContent = 'Pausar canción';
     } else {
