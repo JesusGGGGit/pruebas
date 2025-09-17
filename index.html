@@ -3,25 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <title>Reproducir/Pausar Audio</title>
+<style>
+  #btnReproducir {
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
 
 <h2>Control de Audio</h2>
 
-<audio id="miAudio" src="song/song.mp3"></audio>
-<button id="btnReproducir">Reproducir / Pausar</button>
+<button id="btnReproducir">Tocar canción</button>
 
 <script>
-const audio = document.getElementById('miAudio');
+let audio;
 const boton = document.getElementById('btnReproducir');
 
 boton.addEventListener('click', () => {
+    // Crear el audio solo en el primer click
+    if (!audio) {
+        audio = new Audio('song/song.mp3');
+    }
+
+    // Alternar reproducción / pausa
     if (audio.paused) {
-        audio.play().catch(error => {
-            alert('El navegador requiere interacción para reproducir el audio.');
+        audio.play().catch(err => {
+            console.log('Error al reproducir audio:', err);
         });
+        boton.textContent = 'Pausar canción';
     } else {
         audio.pause();
+        boton.textContent = 'Tocar canción';
     }
 });
 </script>
