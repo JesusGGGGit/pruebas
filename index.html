@@ -3,42 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Botón Play/Pause</title>
+<title>Play/Pause Audio</title>
+<style>
+  body { display:flex; justify-content:center; align-items:center; height:100vh; background:#222; color:white; font-family:sans-serif; }
+  button { padding:20px 40px; font-size:20px; cursor:pointer; border:2px solid white; background:transparent; color:white; border-radius:8px; }
+  button:hover { background: rgba(255,255,255,0.1); }
+</style>
 </head>
 <body>
-  
-  <button id="audioBtn">Play</button>
+
+<audio id="audio" preload="auto">
+  <source src="song/song.mp3" type="audio/mpeg">
+  Tu navegador no soporta audio.
+</audio>
+
+<button id="playPause">Reproducir</button>
 
 <script>
-let audioInstance = null;
+const audio = document.getElementById('audio');
+const btn = document.getElementById('playPause');
 
-document.getElementById('audioBtn').addEventListener('click', function() {
-    if (!audioInstance) {
-        // Crear audio al primer click
-        audioInstance = new Audio('song/song.mp3');
-        audioInstance.loop = true;
-        audioInstance.muted = false; // opcional, necesario si iPad bloquea
-        audioInstance.playsInline = true; // importante para Safari iOS/iPadOS
-        audioInstance.play().then(() => {
-            this.textContent = 'Pause';
+btn.addEventListener('click', () => {
+    if (audio.paused) {
+        audio.play().then(() => {
+            btn.textContent = "Pausar";
         }).catch(err => {
-            console.error('Error reproduciendo audio:', err);
-        });
-    } else if (audioInstance.paused) {
-        // Si estaba pausado, reproducir
-        audioInstance.play().then(() => {
-            this.textContent = 'Pause';
-        }).catch(err => {
-            console.error('Error reproducir audio:', err);
+            console.error("No se pudo reproducir el audio:", err);
         });
     } else {
-        // Si estaba sonando, pausar
-        audioInstance.pause();
-        this.textContent = 'Play';
+        audio.pause();
+        btn.textContent = "Reproducir";
     }
 });
 </script>
-
 
 </body>
 </html>
