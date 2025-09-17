@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Play/Pause Audio</title>
+<title>Reproducir Audio con Confirmación</title>
 <style>
   body { display:flex; justify-content:center; align-items:center; height:100vh; background:#222; color:white; font-family:sans-serif; }
   button { padding:20px 40px; font-size:20px; cursor:pointer; border:2px solid white; background:transparent; color:white; border-radius:8px; }
@@ -17,7 +17,7 @@
   Tu navegador no soporta audio.
 </audio>
 
-<button id="playPause">Reproducir</button>
+<button id="playPause">Reproducir / Pausar</button>
 
 <script>
 const audio = document.getElementById('audio');
@@ -25,14 +25,18 @@ const btn = document.getElementById('playPause');
 
 btn.addEventListener('click', () => {
     if (audio.paused) {
-        audio.play().then(() => {
-            btn.textContent = "Pausar";
-        }).catch(err => {
-            console.error("No se pudo reproducir el audio:", err);
-        });
+        // Pregunta explícita al usuario
+        const quiereReproducir = confirm("¿Deseas reproducir el audio?");
+        if (quiereReproducir) {
+            audio.play().then(() => {
+                btn.textContent = "Pausar";
+            }).catch(err => {
+                console.error("Error al reproducir audio:", err);
+            });
+        }
     } else {
         audio.pause();
-        btn.textContent = "Reproducir";
+        btn.textContent = "Reproducir / Pausar";
     }
 });
 </script>
