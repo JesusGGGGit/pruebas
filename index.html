@@ -6,30 +6,33 @@
 <title>Botón Play/Pause</title>
 </head>
 <body>
-   <button id="audioButton">Play</button>
+   <button id="audioBtn">Play</button>
 
 <script>
-const button = document.getElementById('audioButton');
-let audio; // No se crea hasta el clic
+document.getElementById('audioBtn').addEventListener('click', function() {
+    // Crear audio dentro del click
+    const audio = new Audio('song/song.mp3');
+    
+    // Intentar reproducir
+    audio.play().then(() => {
+        // Reproducir loop
+        audio.loop = true;
+        this.textContent = 'Pause';
+        // Guardar audio en el botón para poder pausarlo
+        this.audioInstance = audio;
+    }).catch(err => {
+        console.error('Error reproducir audio:', err);
+    });
 
-button.addEventListener('click', () => {
-    if (!audio) {
-        audio = new Audio('song/song.mp3'); // ruta a tu audio
-    }
-
-    if (audio.paused) {
-        audio.play().then(() => {
-            audio.loop = true; // activamos loop después de reproducir
-            button.textContent = 'Pause';
-        }).catch(err => {
-            console.error('Error al reproducir audio:', err);
-        });
-    } else {
-        audio.pause();
-        button.textContent = 'Play';
+    // Si ya había audio, lo pausamos
+    if (this.audioInstance && !this.audioInstance.paused) {
+        this.audioInstance.pause();
+        this.textContent = 'Play';
+        this.audioInstance = null;
     }
 });
 </script>
+
 
 </body>
 </html>
