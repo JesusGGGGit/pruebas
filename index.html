@@ -2,41 +2,26 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reproducir Audio con Confirmación</title>
-<style>
-  body { display:flex; justify-content:center; align-items:center; height:100vh; background:#222; color:white; font-family:sans-serif; }
-  button { padding:20px 40px; font-size:20px; cursor:pointer; border:2px solid white; background:transparent; color:white; border-radius:8px; }
-  button:hover { background: rgba(255,255,255,0.1); }
-</style>
+<title>Reproducir/Pausar Audio</title>
 </head>
 <body>
 
-<audio id="audio" preload="auto">
-  <source src="song/song.mp3" type="audio/mpeg">
-  Tu navegador no soporta audio.
-</audio>
+<h2>Control de Audio</h2>
 
-<button id="playPause">Reproducir / Pausar</button>
+<audio id="miAudio" src="song/song.mp3"></audio>
+<button id="btnReproducir">Reproducir / Pausar</button>
 
 <script>
-const audio = document.getElementById('audio');
-const btn = document.getElementById('playPause');
+const audio = document.getElementById('miAudio');
+const boton = document.getElementById('btnReproducir');
 
-btn.addEventListener('click', () => {
+boton.addEventListener('click', () => {
     if (audio.paused) {
-        // Pregunta explícita al usuario
-        const quiereReproducir = confirm("¿Deseas reproducir el audio?");
-        if (quiereReproducir) {
-            audio.play().then(() => {
-                btn.textContent = "Pausar";
-            }).catch(err => {
-                console.error("Error al reproducir audio:", err);
-            });
-        }
+        audio.play().catch(error => {
+            alert('El navegador requiere interacción para reproducir el audio.');
+        });
     } else {
         audio.pause();
-        btn.textContent = "Reproducir / Pausar";
     }
 });
 </script>
